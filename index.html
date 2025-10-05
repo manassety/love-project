@@ -19,11 +19,12 @@
       overflow: hidden;
       font-family: "Segoe Script", cursive;
       text-align: center;
+      position: relative;
     }
 
     h1 {
       color: #e60073;
-      font-size: 8vw;  /* responsive font */
+      font-size: 8vw;
       margin-bottom: 4vw;
       animation: glow 2s infinite alternate;
     }
@@ -38,12 +39,15 @@
       border: 2px solid #e60073;
       border-radius: 5vw;
       padding: 4vw;
-      font-size: 4vw;  /* responsive text */
+      font-size: 4vw;
       max-width: 90%;
       min-width: 60%;
       white-space: pre-line;
       overflow-wrap: break-word;
       box-shadow: 0 0 1vw rgba(0,0,0,0.2);
+      z-index: 1;
+      animation: fadeIn 3s ease-in forwards;
+      opacity: 0;
     }
 
     .heart {
@@ -57,9 +61,11 @@
       100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
     }
 
-    audio { display: none; }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
 
-    /* Media queries for small screens */
+    /* Mobile responsiveness */
     @media(max-width: 480px){
       h1 { font-size: 10vw; margin-bottom: 6vw; }
       .message { font-size: 5vw; padding: 5vw; border-radius: 6vw; }
@@ -70,10 +76,26 @@
       .message { font-size: 3vw; padding: 2vw; border-radius: 2vw; }
     }
 
+    /* Tap overlay */
+    #tapOverlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255,255,255,0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 6vw;
+      color: #e60073;
+      cursor: pointer;
+      z-index: 10;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
   <h1>❤️ Just For You ❤️</h1>
+
   <div class="message">
     My love,  
 
@@ -82,22 +104,34 @@
     I love you, today and forever. 💖
   </div>
 
-  <audio autoplay loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  <!-- Tap overlay for mobile -->
+  <div id="tapOverlay">Tap anywhere to start 💖</div>
+
+  <!-- Background Music -->
+  <audio id="loveMusic" autoplay loop>
+    <source src="love.mp3" type="audio/mpeg">
   </audio>
 
   <script>
-    // Create floating hearts
+    // Floating hearts
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart");
       heart.innerHTML = "❤️";
       heart.style.left = Math.random() * 100 + "vw";
-      heart.style.fontSize = (Math.random() * 4 + 4) + "vw"; // responsive size
+      heart.style.fontSize = (Math.random() * 4 + 4) + "vw";
       document.body.appendChild(heart);
       setTimeout(() => heart.remove(), 6000);
     }
     setInterval(createHeart, 500);
+
+    // Play music and hide overlay after tap
+    const overlay = document.getElementById('tapOverlay');
+    overlay.addEventListener('click', () => {
+      const music = document.getElementById('loveMusic');
+      music.play();
+      overlay.style.display = 'none';
+    }, { once: true });
   </script>
 </body>
 </html>
