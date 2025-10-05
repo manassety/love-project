@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>For You ❤️</title>
   <style>
-    /* Reset */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
+      margin: 0;
+      padding: 0;
       height: 100vh;
       width: 100vw;
       background: linear-gradient(to top right, #ffdde1, #ee9ca7);
@@ -22,76 +21,45 @@
       position: relative;
     }
 
-    h1 {
-      color: #e60073;
-      font-size: 8vw;
-      margin-bottom: 4vw;
-      animation: glow 2s infinite alternate;
-    }
-
-    @keyframes glow {
-      from { text-shadow: 0 0 5px #ff3366; }
-      to { text-shadow: 0 0 15px #ff6699; }
-    }
+    h1 { color: #e60073; font-size: 8vw; margin-bottom: 4vw; animation: glow 2s infinite alternate; }
+    @keyframes glow { from {text-shadow:0 0 5px #ff3366;} to {text-shadow:0 0 15px #ff6699;} }
 
     .message {
-      background: rgba(255, 240, 245, 0.9);
+      background: rgba(255,240,245,0.9);
       border: 2px solid #e60073;
       border-radius: 5vw;
       padding: 4vw;
       font-size: 4vw;
       max-width: 90%;
       min-width: 60%;
-      white-space: pre-line;
-      overflow-wrap: break-word;
-      box-shadow: 0 0 1vw rgba(0,0,0,0.2);
-      z-index: 1;
-      opacity: 0; /* fade-in after tap */
+      opacity: 0;
       transition: opacity 2s ease-in;
     }
 
-    .heart {
-      position: absolute;
-      color: #e60073;
-      animation: floatUp 6s linear infinite;
-    }
+    .heart { position: absolute; color: #e60073; animation: floatUp 6s linear infinite; }
+    @keyframes floatUp { 0% {transform: translateY(100vh) scale(0.5);opacity:1;} 100% {transform: translateY(-10vh) scale(1.5);opacity:0;} }
 
-    @keyframes floatUp {
-      0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
-      100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
-    }
-
-    /* Mobile responsiveness */
-    @media(max-width: 480px){
-      h1 { font-size: 10vw; margin-bottom: 6vw; }
-      .message { font-size: 5vw; padding: 5vw; border-radius: 6vw; }
-    }
-
-    @media(min-width: 1440px){
-      h1 { font-size: 6vw; margin-bottom: 2vw; }
-      .message { font-size: 3vw; padding: 2vw; border-radius: 2vw; }
-    }
-
-    /* Tap overlay */
-    #tapOverlay {
+    #startButton {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.9);
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: 6vw;
       color: #e60073;
       cursor: pointer;
-      z-index: 10;
+      z-index: 100;
       text-align: center;
     }
+
+    @media(max-width:480px){ h1{font-size:10vw;margin-bottom:6vw;} .message{font-size:5vw;padding:5vw;border-radius:6vw;} }
+    @media(min-width:1440px){ h1{font-size:6vw;margin-bottom:2vw;} .message{font-size:3vw;padding:2vw;border-radius:2vw;} }
   </style>
 </head>
 <body>
   <h1>❤️ Just For You ❤️</h1>
-
   <div class="message" id="loveMessage">
     My love,  
 
@@ -100,43 +68,36 @@
     I love you, today and forever. 💖
   </div>
 
-  <!-- Tap overlay for mobile autoplay -->
-  <div id="tapOverlay">Tap anywhere to start 💖</div>
+  <!-- Start overlay -->
+  <div id="startButton">Tap to Play Music & See Surprise 💖</div>
 
-  <!-- Background Music -->
+  <!-- Audio -->
   <audio id="loveMusic" loop>
     <source src="love.mp3" type="audio/mpeg">
   </audio>
 
   <script>
-    const overlay = document.getElementById('tapOverlay');
+    const button = document.getElementById('startButton');
     const music = document.getElementById('loveMusic');
     const message = document.getElementById('loveMessage');
 
-    // Floating hearts
+    let heartInterval;
+
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart");
       heart.innerHTML = "❤️";
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.fontSize = (Math.random() * 4 + 4) + "vw";
+      heart.style.left = Math.random()*100 + "vw";
+      heart.style.fontSize = (Math.random()*4+4) + "vw";
       document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 6000);
+      setTimeout(()=>heart.remove(),6000);
     }
-    let heartInterval;
 
-    // Start everything on first tap
-    overlay.addEventListener('click', () => {
-      music.play();                    // Play music
-      message.style.opacity = 1;       // Fade-in love letter
-      heartInterval = setInterval(createHeart, 500); // Start hearts
-      overlay.style.display = 'none';  // Hide overlay
-    }, { once: true });
-
-    // Optional: Stop hearts when page is hidden (save battery)
-    document.addEventListener('visibilitychange', () => {
-      if(document.hidden) clearInterval(heartInterval);
-      else heartInterval = setInterval(createHeart, 500);
+    button.addEventListener('click', ()=>{
+      music.play();
+      message.style.opacity = 1;
+      heartInterval = setInterval(createHeart,500);
+      button.style.display = 'none';
     });
   </script>
 </body>
